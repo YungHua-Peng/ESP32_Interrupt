@@ -15,3 +15,13 @@
 //==========================================================================//
 
 #define Baud_Rate 115200
+
+//
+// Define the interrupt pins
+// All GPIO ports on ESP32 support interrupt feature
+//
+#define Interrupt_Pin_0 22
+#define Interrupt_Pin_1 23
+
+// Define the debounce interval
+#define Debounce_Time 200

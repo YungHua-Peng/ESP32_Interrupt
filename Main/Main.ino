@@ -16,12 +16,69 @@
 
 #include "ConstantDefinition.h"
 
+//
+// Declare the interrupt functions
+//
+void IRAM_ATTR ISR_Function_0(void);
+void IRAM_ATTR ISR_Function_1(void);
+
+// Declare the variables to save the time;
+unsigned long Time;
+unsigned long Time_temp;
+
 void setup() {
   // Set the serial baud rate. 
   Serial.begin(Baud_Rate);
 
+  //
+  // Hardware interrupt
+  // Set the pin mode of GPIO for interruption
+  //
+  pinMode(Interrupt_Pin_0, INPUT_PULLUP);
+  attachInterrupt(Interrupt_Pin_0, ISR_Function_0, FALLING);
+  pinMode(Interrupt_Pin_1, INPUT_PULLUP);
+  attachInterrupt(Interrupt_Pin_1, ISR_Function_1, FALLING);
+
+  // Save the time for debounce
+  Time = millis();
 }
 
 void loop() {
+  // Do nothing
+}
 
+//
+// This function will be called when the Interrupt_Pin_0 has falling detected
+//
+void IRAM_ATTR ISR_Function_0() {
+  // Check the time interval first for debounce
+  Time_temp = millis();
+  if ((Time_temp - Time) > Debounce_Time) {
+    // Save the new time
+    Time = Time_temp;
+
+    //
+    // Note that we cannot use the delay() nor Serial.println() with an interrupt
+    // Use ets_printf() instead
+    //
+    ets_printf("ISR_Function_0 triggered!\n");
+  }
+}
+
+//
+// This function will be called when the Interrupt_Pin_1 has falling detected
+//
+void IRAM_ATTR ISR_Function_1() {
+  // Check the time interval first for debounce
+  Time_temp = millis();
+  if ((Time_temp - Time) > Debounce_Time) {
+    // Save the new time
+    Time = Time_temp;
+
+    //
+    // Note that we cannot use the delay() nor Serial.println() with an interrupt
+    // Use ets_printf() instead
+    //
+    ets_printf("ISR_Function_1 triggered!\n");
+  }
 }
